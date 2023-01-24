@@ -1,0 +1,36 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "multimodal-autoencoders"
+description = "Pytorch reimplementation of https://www.nature.com/articles/s41467-020-20249-2. Data agnostic and modular."
+dynamic = ["version"]
+readme = "README.md"
+license = "MIT"
+keywords = []
+authors = [
+    { name = "Thibault, Bechtler", email = "thibault.bechtler@novartis.com" },
+    { name = "Bartosz, Baranowski", email = "bartosz.baranowski@novartis.com" },
+    { name = "Steffen, Renner", email = "steffen.renner@novartis.com" },
+    { name = "Michal, Pikusa", email = "michal.pikusa@novartis.com" },
+]
+dependencies = [
+    "dataclasses",
+    "numpy",
+    "scikit-learn",
+    "torch",
+]
+
+[tool.hatch.version]
+path = "multimodal_autoencoders/__about__.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/multimodal_autoencoders",
+]
+
+[project.urls]
+Documentation = "https://github.com/unknown/multimodal_autoencoders#readme"
+Issues = "https://github.com/unknown/multimodal_autoencoders/issues"
+Source = "https://github.com/unknown/multimodal_autoencoders"
