@@ -1,10 +1,17 @@
 from setuptools import setup
+import re
+
+def get_property(prop, project):
+    result = re.search(r'{}\s*=\s*[\'"]([^\'"]*)[\'"]'.format(prop), open(project + '/__init__.py').read())
+    return result.group(1)
+
+project_name = 'multimodal_autoencoders'
 
 setup(
     name='multimodal_autoencoders',
-    version='0.1',
+    version=get_property('__version__', project_name),
     author='Bechtler Thibault',
-    author_email='thibault.bechtler@novartis.com',
+    author_email='th.bechtler@gmail.com',
     packages=['multimodal_autoencoders'],
     long_description=open("README.md").read(),
     install_requires=[
