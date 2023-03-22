@@ -1,7 +1,8 @@
 import torch
 from multimodal_autoencoders.model.classifiers import SimpleClassifier, Discriminator
 
-discriminator = Discriminator("adam", 0.001, 10, 2, 50)
+discriminator = Discriminator('adam', 0.001, 10, 2, 50)
+
 
 class TestDiscriminator:
     
@@ -13,7 +14,8 @@ class TestDiscriminator:
         assert scores.size(dim=1) == 2
         
 
-classifier = SimpleClassifier("adam", 0.001, 10, 4)
+classifier = SimpleClassifier('adam', 0.001, 10, 4)
+
 
 class TestSimpleClassifier:
     
@@ -23,4 +25,3 @@ class TestSimpleClassifier:
         
         assert scores.size(dim=0) == 10
         assert scores.size(dim=1) == 4
-    

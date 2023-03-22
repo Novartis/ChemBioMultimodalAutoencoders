@@ -1,9 +1,8 @@
 import torch
-from torch.utils.data import Dataset
-from typing import Dict, Optional, Union
+from typing import Dict, Union
 import numpy as np
-from sklearn import preprocessing
 from multimodal_autoencoders.base.base_dataset import BaseDataset
+
 
 class PairedDataset(BaseDataset):
     def __init__(self, data_dict: Dict[str, np.array], cluster_labels: Union[np.array, None] = None):
@@ -18,8 +17,7 @@ class PairedDataset(BaseDataset):
         
         # set cluster labels object
         self.cluster_labels = self._set_cluster_labels(cluster_labels)
-        
-            
+       
     def _set_cluster_labels(self, cluster_labels: Union[np.array, None] = None) -> np.ndarray:
         """
         """
@@ -32,8 +30,7 @@ class PairedDataset(BaseDataset):
         else:
             # false: create fake cluster info
             return np.zeros(self.length).reshape(self.length, 1)
-            
-    
+
     def _check_data_validity(self, data_dict: Dict[str, np.array]):
         """
         """
@@ -42,33 +39,31 @@ class PairedDataset(BaseDataset):
         assert len(set(len_list)) == 1, "Provided data sets don't have the same length."
         
         return data_dict
-    
-    
+
     def _set_length(self, data_dict: Dict[str, np.array]):
         """
         """
         len_list = [len(v) for v in data_dict.values()]
         return len_list[0]
-       
-    
+
     def __getitem__(self, idx):
         """
         build return dict
         mapping key of data_dict to the appropriate tensor
         """
-        
         sample_dict = {}
         for k, v in self.data_dict.items():
             sample_dict[k] = {
-                "data": torch.from_numpy(v[idx]).float(),
-                "cluster": torch.from_numpy(self.cluster_labels[idx]).int()}
+                'data': torch.from_numpy(v[idx]).float(),
+                'cluster': torch.from_numpy(self.cluster_labels[idx]).int()}
         
         return sample_dict
     
 
 class UnpairedDataset(BaseDataset):
     def __init__(
-        self, data_dict: Dict[str, np.array], cluster_labels:Union[Dict[str, np.array], None]  = None):
+        self, data_dict: Dict[str, np.array], cluster_labels: Union[Dict[str, np.array], None] = None
+    ):
         # parent class should take care of data needed for init
         super().__init__()
         
@@ -81,13 +76,12 @@ class UnpairedDataset(BaseDataset):
         # set cluster labels object
         self.cluster_labels = self._set_cluster_labels(cluster_labels)
         
-            
-    def _set_cluster_labels(self, cluster_labels: Union[Dict[str, np.array], None]  = None):
+    def _set_cluster_labels(self, cluster_labels: Union[Dict[str, np.array], None] = None):
         """
         """
         cluster_dict = {}
         # check if cluster info is available
-        if cluster_labels != None:
+        if cluster_labels is not None:
             # true: check that we have cluster info for all data sets
             assert len(cluster_labels) == len(self.data_dict)
             
@@ -103,7 +97,6 @@ class UnpairedDataset(BaseDataset):
                 
             return cluster_dict
             
-    
     def _check_data_validity(self, data_dict: Dict[str, np.array]):
         """
         """
@@ -111,16 +104,14 @@ class UnpairedDataset(BaseDataset):
         
         return data_dict
     
-    
     def _set_length(self, data_dict: Dict[str, np.array]):
         """
         """
-        max_len = float("-inf")
+        max_len = float('-inf')
         for v in data_dict.values():
             max_len = max(max_len, len(v))
         
         return max_len
-        
     
     def __getitem__(self, idx):
         """
@@ -131,7 +122,7 @@ class UnpairedDataset(BaseDataset):
         sample_dict = {}
         for k, v in self.data_dict.items():
             sample_dict[k] = {
-                "data": torch.from_numpy(v[idx]).float(),
-                "cluster": torch.from_numpy(self.cluster_labels[idx]).int()}
+                'data': torch.from_numpy(v[idx]).float(),
+                'cluster': torch.from_numpy(self.cluster_labels[idx]).int()}
         
         return sample_dict
