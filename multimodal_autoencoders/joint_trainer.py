@@ -18,9 +18,6 @@ import pprint
 class JointTrainer():
     def __init__(
         self, model_dict: Dict[str, VariationalAutoencoder], discriminator: Classifier,
-        max_epochs: int, recon_weight: Union[float, Dict[str, float]] = 1, beta: float = 0.1,
-        disc_weight: float = 1, anchor_weight: float = 0.001, cl_weight: float = 0,
-        ae_metric: Metric = MSE(), anchor_metric: Metric = MAE(), classifier_metric: Metric = CEL(),
         classifier: Optional[Classifier] = None, checkpoint_dir: str = ""):
         
         # set up logging. move maybe to util or main file later
@@ -28,8 +25,6 @@ class JointTrainer():
                             format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
         logging.info('initializing trainer')
         
-        # internal flags and parameters
-        self.max_epochs = max_epochs
         # init device flag
         self.device = "cpu"
 
@@ -37,19 +32,6 @@ class JointTrainer():
         self.model_dict = model_dict
         self.discriminator = discriminator
 
-        # loss weights
-        # could also be inputs to train function
-        self.recon_weight_dict = self._set_recon_weight_dict(recon_weight)
-        self.beta = beta
-        self.cl_weight = cl_weight
-        self.disc_weight = disc_weight
-        self.anchor_weight = anchor_weight
-
-        # dynamically derived parameters
-        self.paired = False
-        if anchor_weight > 0:
-            self.paired = True
-            
         self.use_classifier = False
         if classifier != None:
             # check for instance of correct class
@@ -61,11 +43,6 @@ class JointTrainer():
         if len(checkpoint_dir) > 0:
             self._resume_from_file(checkpoint_dir)
 
-        # register loss functions
-        self._ae_recon_metric = ae_metric
-        self._anchor_metric = anchor_metric
-        self._classification_metric = classifier_metric
-        
         # define dict of metrics to track
         self.meter_dict: Dict[str, AverageMeter] = {}
 
@@ -79,7 +56,7 @@ class JointTrainer():
             # make sure the path exists
             assert os.path.exists(vae_dict_path), f"Path for model {key} does not exist."
             
-            vae_state_dict = torch.load(vae_dict_path)
+            vae_state_dict = torch.load(vae_dict_path, map_location=torch.device('cpu'))
             model.load_state_dict(vae_state_dict["autoencoder"])
             model._optimizer.load_state_dict(vae_state_dict["optimizer"])
 
@@ -87,12 +64,13 @@ class JointTrainer():
         # make sure path exists
         discriminator_path = os.path.join(checkpoint_dir, "discriminator", "discriminator.pth")
         assert os.path.exists(discriminator_path), "Discriminator object provided, but path does not exist."
-        self.discriminator.load_state_dict(torch.load(discriminator_path))
+        self.discriminator.load_state_dict(torch.load(discriminator_path, map_location=torch.device('cpu')))
 
         # resume classifier
         if self.classifier != None:
             classifier_path = os.path.join(checkpoint_dir, "classifier", "classifier.pth")
             assert os.path.exists(classifier_path), "Classifier object provided, but path does not exist."
+            self.classifier.load_state_dict(torch.load(classifier_path, map_location=torch.device('cpu')))
 
         # resume loss weights
         loss_weight_path = os.path.join(checkpoint_dir, "loss_weights.pth")
@@ -132,16 +110,29 @@ class JointTrainer():
 
 
     def train(
-        self, train_data_dict: Dict[str, np.array], val_data_dict: Dict[str, np.array],
-        batch_size: int = 256, cluster_labels: Union[Dict[str, np.array], np.array, None] = None,
-        cluster_modality: str = "", log_path: str = "", use_gpu = False, patience: int = -1, min_value: float = 0):
-        """Main training function.
+        self, train_data_dict: Dict[str, np.array], val_data_dict: Dict[str, np.array], max_epochs: int,
+        batch_size: int = 128,  recon_weight: Union[float, Dict[str, float]] = 1, beta: float = 0.01,
+        disc_weight: float = 1, anchor_weight: float = 0.001, cl_weight: float = 0,
+        ae_metric: Metric = MSE(), anchor_metric: Metric = MAE(), classifier_metric: Metric = CEL(),
+        cluster_labels: Union[Dict[str, np.array], np.array, None] = None, cluster_modality: str = "",
+        log_path: str = "", use_gpu = False, patience: int = -1, min_value: float = 0):
+        """_summary_
 
         Args:
             train_data_dict (Dict[str, np.array]): dictionary mapping modality names to numpy arrays containing training data
             val_data_dict (Dict[str, np.array]): dictionary mapping modality names to numpy arrays containing training data
-            batch_size (int, optional): Batch size to use during training. Defaults to 256.
+            max_epochs (int): Maximal number of epochs the model should run.
+            batch_size (int, optional): Number of samples per batch. Defaults to 128.
+            recon_weight (Union[float, Dict[str, float]], optional): Scaling values for reconstruction loss. Defaults to 1.
+            beta (float, optional): Sacling value for KL divergence. Defaults to 0.01.
+            disc_weight (float, optional): Scaling value for the discriminator loss. Defaults to 1.
+            anchor_weight (float, optional): Scaling value for the anchor loss. Defaults to 0.001.
+            cl_weight (float, optional): Scaling value for the classifier loss. Defaults to 0.
+            ae_metric (Metric, optional): Metric to use as the reconstruction metric. Defaults to MSE().
+            anchor_metric (Metric, optional): Metric to use as the anchor metric. Defaults to MAE().
+            classifier_metric (Metric, optional): Metric to use as the classifier metric. Defaults to CEL().
             cluster_labels (Union[Dict[str, np.array], np.array, None], optional): Cluster labels to use during training if provided. Defaults to None.
+            cluster_modality (str, optional): Modality which should use the classifier during pre-training. Defaults to "".
             log_path (str, optional): Path to write training log to. If omitted log will spill to console.
             use_gpu (bool, optional): Should GPU acceleration be used during training. Defaults to False.
             patience (int, optional): Number of epochs to wait before training is stopped in early stoppping. No early stopping if omitted.
@@ -150,8 +141,27 @@ class JointTrainer():
         Returns:
             meter dictionary: Dictionary of loss value meters for training and validation.
         """
-        
-        logging.info("starting joint training")
+
+        logging.info("setting loss scalings and other parameters")
+        # internal flags and parameters
+        self.max_epochs = max_epochs
+
+        # loss weights
+        self.recon_weight_dict = self._set_recon_weight_dict(recon_weight)
+        self.beta = beta
+        self.cl_weight = cl_weight
+        self.disc_weight = disc_weight
+        self.anchor_weight = anchor_weight
+
+        # dynamically derived parameters
+        self.paired = False
+        if anchor_weight > 0:
+            self.paired = True
+
+        # register loss functions
+        self._ae_recon_metric = ae_metric
+        self._anchor_metric = anchor_metric
+        self._classification_metric = classifier_metric
     
         # checking device status
         self.device = "cuda" if use_gpu and torch.cuda.is_available() else "cpu"
@@ -194,8 +204,9 @@ class JointTrainer():
         self._pretrain_ae(train_dataloader, cluster_modality, log_path)
 
         # tracking variable for early stopping
-        prev_val_loss = 1000
+        prev_val_loss = 10
          
+        logging.info("starting joint training")
         # main training loop
         for epoch in range(self.max_epochs):
             
@@ -895,7 +906,7 @@ class JointTrainer():
     
     def _dataloader_from_numpy(self, X: np.array, batch_size: int, shuffle: bool):
         dataloader = torch.utils.data.DataLoader(
-            torch.utils.data.TensorDataset(torch.from_numpy(X).float()),
+            torch.utils.data.TensorDataset(torch.from_numpy(X.copy()).float()),
             batch_size=batch_size,
             shuffle=shuffle,
             drop_last=False)
