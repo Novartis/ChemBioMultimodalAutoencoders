@@ -1,6 +1,6 @@
-from cmath import tanh
 import torch.nn as nn
 from multimodal_autoencoders.base.base_model import Decoder
+
 
 class CpdDecoder(Decoder):
     
@@ -19,7 +19,7 @@ class CpdDecoder(Decoder):
 
 
 class PQSARDecoder(Decoder):
-    
+
     def _set_model(self) -> nn.Module:
         """
         Define actual decoder model
@@ -28,16 +28,15 @@ class PQSARDecoder(Decoder):
         model = nn.Sequential(
             nn.Linear(self.n_z, self.n_hidden),
             nn.LeakyReLU(0.1),
-            #nn.Tanhshrink(),
             nn.Linear(self.n_hidden, self.n_hidden),
             nn.LeakyReLU(0.1),
-            #nn.Tanhshrink(),
             nn.Linear(self.n_hidden, self.n_input))
         
         return model
 
+
 class HTSDecoder(Decoder):
-    
+
     def _set_model(self) -> nn.Module:
         """
         Define actual decoder model
@@ -52,6 +51,7 @@ class HTSDecoder(Decoder):
         )
 
         return model
+
 
 class SimpleDecoder(Decoder):
     """Very basic decoder for small datasets
@@ -71,6 +71,7 @@ class SimpleDecoder(Decoder):
         )
 
         return model
+
 
 class LinearDecoder(Decoder):
     """Custom decoder to investigate usabilty of uncompressed
@@ -98,7 +99,8 @@ class DynamicDecoder(Decoder):
     def __init__(
         self, n_input: int, n_hidden: int, n_z: int, num_layers: int,
         dropout: float = 0.2, use_batchnorm: bool = True,
-        activation: str = "lrelu"):
+        activation: str = 'lrelu'
+    ):
         """Decoder constructor
 
         Args:
@@ -108,7 +110,9 @@ class DynamicDecoder(Decoder):
             num_layers (int): Number of layers to use
             dropout (float, optional): Percentage of dropout to use in each layer. Defaults to 0.2.
             use_batchnorm (bool, optional): If Batchnorm should be applied after each layer. Defaults to true.
-            activation (str, optional): String of activation function to use. Chose from: "lrelu", "relu", "sigmoid", "tanhshrink". Defaults to "lrelu".
+            activation (str, optional):
+                String of activation function to use.
+                Chose from: 'lrelu', 'relu', 'sigmoid', 'tanhshrink'. Defaults to 'lrelu.
         """
         self.num_layers = num_layers
         self.dropout = dropout
@@ -123,9 +127,8 @@ class DynamicDecoder(Decoder):
             'tanh': nn.Tanh()
         }
 
-        super().__init__(n_input = n_input, n_hidden = n_hidden, n_z = n_z)
+        super().__init__(n_input=n_input, n_hidden=n_hidden, n_z=n_z)
 
-    
     def _set_model(self) -> nn.Module:
 
         module_list = nn.ModuleList()
@@ -144,7 +147,7 @@ class DynamicDecoder(Decoder):
             
             # add dropout if requested
             if self.dropout > 0:
-                module_list.append(nn.Dropout(p = self.dropout))
+                module_list.append(nn.Dropout(p=self.dropout))
 
             module_list.append(self.activations[self.activation])
 

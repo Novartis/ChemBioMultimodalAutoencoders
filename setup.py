@@ -1,9 +1,11 @@
 from setuptools import setup
 import re
 
+
 def get_property(prop, project):
     result = re.search(r'{}\s*=\s*[\'"]([^\'"]*)[\'"]'.format(prop), open(project + '/__init__.py').read())
     return result.group(1)
+
 
 project_name = 'multimodal_autoencoders'
 
@@ -13,11 +15,11 @@ setup(
     author='Bechtler Thibault',
     author_email='th.bechtler@gmail.com',
     packages=['multimodal_autoencoders'],
-    long_description=open("README.md").read(),
+    long_description=open('README.md').read(),
     install_requires=[
-        "dataclasses",
-        "numpy",
-        "torch",
-        "scikit-learn",
+        'dataclasses',
+        'numpy',
+        'torch',
+        'scikit-learn',
     ],
 )

@@ -9,7 +9,6 @@ import numpy as np
 from sklearn.metrics import (
     roc_auc_score,
     mean_squared_error,
-    mean_absolute_error,
     accuracy_score,
     balanced_accuracy_score,
 )
@@ -34,7 +33,7 @@ class UnsupMetricContainer:
     """
 
     metric_names: List[str]
-    prefix: str = ""
+    prefix: str = ''
 
     def __post_init__(self):
         self.metrics = Metric.get_metrics_by_names(self.metric_names)
@@ -77,7 +76,7 @@ class MetricContainer:
     """
 
     metric_names: List[str]
-    prefix: str = ""
+    prefix: str = ''
 
     def __post_init__(self):
         self.metrics = Metric.get_metrics_by_names(self.metric_names)
@@ -113,7 +112,7 @@ class MetricContainer:
 
 class Metric:
     def __call__(self, y_true, y_pred):
-        raise NotImplementedError("Custom Metrics must implement this function")
+        raise NotImplementedError('Custom Metrics must implement this function')
 
     @classmethod
     def get_metrics_by_names(cls, names):
@@ -138,7 +137,7 @@ class Metric:
         for name in names:
             assert (
                 name in available_names
-            ), f"{name} is not available, choose in {available_names}"
+            ), f'{name} is not available, choose in {available_names}'
             idx = available_names.index(name)
             metric = available_metrics[idx]()
             metrics.append(metric)
@@ -151,8 +150,8 @@ class MSE(Metric):
     """
 
     def __init__(self):
-        self._name = "mse"
-        self._maximize = False 
+        self._name = 'mse'
+        self._maximize = False
 
     def __call__(self, y_true, y_score):
         """
@@ -181,7 +180,7 @@ class CEL(Metric):
     """
 
     def __init__(self):
-        self._name = "cel"
+        self._name = 'cel'
         self._maximize = False
 
     def __call__(self, y_true, y_score):
@@ -210,7 +209,7 @@ class AUC(Metric):
     """
 
     def __init__(self):
-        self._name = "auc"
+        self._name = 'auc'
         self._maximize = True
 
     def __call__(self, y_true, y_score):
@@ -238,7 +237,7 @@ class Accuracy(Metric):
     """
 
     def __init__(self):
-        self._name = "accuracy"
+        self._name = 'accuracy'
         self._maximize = True
 
     def __call__(self, y_true, y_score):
@@ -267,7 +266,7 @@ class BalancedAccuracy(Metric):
     """
 
     def __init__(self):
-        self._name = "balanced_accuracy"
+        self._name = 'balanced_accuracy'
         self._maximize = True
 
     def __call__(self, y_true, y_score):
@@ -296,7 +295,7 @@ class MAE(Metric):
     """
 
     def __init__(self):
-        self._name = "mae"
+        self._name = 'mae'
         self._maximize = False
 
     def __call__(self, y_true, y_score):
@@ -325,7 +324,7 @@ class RMSE(Metric):
     """
 
     def __init__(self):
-        self._name = "rmse"
+        self._name = 'rmse'
         self._maximize = False
 
     def __call__(self, y_true, y_score):
@@ -353,7 +352,7 @@ class ACS(Metric):
     """
 
     def __init__(self):
-        self._name = "cosine"
+        self._name = 'cosine'
         self._maximize = False
 
     def __call__(self, y_true, y_score):
@@ -398,5 +397,5 @@ def check_metrics(metrics):
         elif issubclass(metric, Metric):
             val_metrics.append(metric()._name)
         else:
-            raise TypeError("You need to provide a valid metric format")
+            raise TypeError('You need to provide a valid metric format')
     return val_metrics

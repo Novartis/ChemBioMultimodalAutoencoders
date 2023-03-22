@@ -1,6 +1,6 @@
-from torch import batch_norm, dropout
 import torch.nn as nn
 from multimodal_autoencoders.base.base_model import Encoder
+
 
 class CpdEncoder(Encoder):
     
@@ -16,7 +16,7 @@ class CpdEncoder(Encoder):
             nn.BatchNorm1d(self.n_hidden),
             nn.Dropout(0.3),
             nn.Linear(self.n_hidden, self.n_hidden),
-            )
+        )
         
         return model
     
@@ -30,18 +30,18 @@ class PQSAREncoder(Encoder):
         model = nn.Sequential(
             nn.Linear(self.n_input, self.n_hidden),
             nn.LeakyReLU(0.1),
-            #nn.Tanhshrink(),
             nn.Dropout(0.3),
             nn.BatchNorm1d(self.n_hidden),
             nn.Linear(self.n_hidden, self.n_hidden),
             nn.LeakyReLU(0.1),
-            #nn.Tanhshrink(),
             nn.BatchNorm1d(self.n_hidden),
             nn.Dropout(0.3),
             nn.BatchNorm1d(self.n_hidden),
-            nn.Linear(self.n_hidden, self.n_hidden))
+            nn.Linear(self.n_hidden, self.n_hidden)
+        )
         
         return model
+
 
 class HTSEncoder(Encoder):
 
@@ -63,6 +63,7 @@ class HTSEncoder(Encoder):
         
         return model
 
+
 class SimpleEncoder(Encoder):
     """Very simple encoder for small datasets
 
@@ -78,7 +79,7 @@ class SimpleEncoder(Encoder):
             nn.Linear(self.n_input, self.n_hidden),
             nn.LeakyReLU(0.1),
             nn.Dropout(0.2)
-            )
+        )
         
         return model
 
@@ -95,7 +96,7 @@ class LinearEncoder(Encoder):
         model = nn.Sequential(
             nn.Linear(self.n_input, self.n_input)
         )
-        return model 
+        return model
 
 
 class DynamicEncoder(Encoder):
@@ -108,7 +109,8 @@ class DynamicEncoder(Encoder):
     def __init__(
         self, n_input: int, n_hidden: int, num_layers: int,
         dropout: float = 0.2, use_batchnorm: bool = True,
-        activation: str = "lrelu"):
+        activation: str = 'lrelu'
+    ):
         """Encoder constructor
 
         Args:
@@ -117,7 +119,9 @@ class DynamicEncoder(Encoder):
             num_layers (int): Number of layers to use
             dropout (float, optional): Percentage of dropout to use in each layer. Defaults to 0.2.
             use_batchnorm (bool, optional): If Batchnorm should be applied after each layer. Defaults to true.
-            activation (str, optional): String of activation function to use. Chose from: "lrelu", "relu", "sigmoid", "tanhshrink". Defaults to "lrelu".
+            activation (str, optional):
+                String of activation function to use.
+                Chose from: "lrelu", "relu", "sigmoid", "tanhshrink". Defaults to "lrelu".
         """
         self.num_layers = num_layers
         self.dropout = dropout
@@ -131,7 +135,7 @@ class DynamicEncoder(Encoder):
             'tanh': nn.Tanh()
         }
 
-        super().__init__(n_input = n_input, n_hidden = n_hidden)
+        super().__init__(n_input=n_input, n_hidden=n_hidden)
 
     def _set_model(self) -> nn.Module:
         print(self.num_layers)
@@ -152,7 +156,7 @@ class DynamicEncoder(Encoder):
             
             # add dropout if requested
             if self.dropout > 0:
-                module_list.append(nn.Dropout(p = self.dropout))
+                module_list.append(nn.Dropout(p=self.dropout))
 
             module_list.append(self.activations[self.activation])
 
