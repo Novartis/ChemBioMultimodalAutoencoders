@@ -43,7 +43,7 @@ dependencies = [
 ]
 
 [envs.lint.scripts]
-typing = "mypy --install-types --non-interactive {args:bayes tests}"
+typing = "mypy --install-types --non-interactive {args:multimodal_autoencoders tests}"
 security = "bandit --quiet --recursive --skip B101,B102,B105,B110,B112,B301,B307,B324,B403,B404,B603,B604,B606,B607 {args:.}"
 style = [
   "flake8 {args:.}",

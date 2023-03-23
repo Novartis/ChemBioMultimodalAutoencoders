@@ -1,14 +1,14 @@
 import torch.nn as nn
+
 from multimodal_autoencoders.base.base_model import Encoder
 
 
 class CpdEncoder(Encoder):
-    
     def _set_model(self) -> nn.Module:
         """
         Return actual encoder architecture that should be used.
         """
-        
+
         # Encoder
         model = nn.Sequential(
             nn.Linear(self.n_input, self.n_hidden),
@@ -17,16 +17,14 @@ class CpdEncoder(Encoder):
             nn.Dropout(0.3),
             nn.Linear(self.n_hidden, self.n_hidden),
         )
-        
+
         return model
-    
-    
+
+
 class PQSAREncoder(Encoder):
-    
     def _set_model(self) -> nn.Module:
-        """
-        """
-        
+        """ """
+
         model = nn.Sequential(
             nn.Linear(self.n_input, self.n_hidden),
             nn.LeakyReLU(0.1),
@@ -37,14 +35,13 @@ class PQSAREncoder(Encoder):
             nn.BatchNorm1d(self.n_hidden),
             nn.Dropout(0.3),
             nn.BatchNorm1d(self.n_hidden),
-            nn.Linear(self.n_hidden, self.n_hidden)
+            nn.Linear(self.n_hidden, self.n_hidden),
         )
-        
+
         return model
 
 
 class HTSEncoder(Encoder):
-
     def _set_model(self) -> nn.Module:
         """_summary_
 
@@ -58,9 +55,9 @@ class HTSEncoder(Encoder):
             nn.Linear(self.n_hidden, self.n_hidden),
             nn.Tanhshrink(),
             nn.Linear(self.n_hidden, self.n_hidden),
-            nn.Tanhshrink()
+            nn.Tanhshrink(),
         )
-        
+
         return model
 
 
@@ -70,17 +67,12 @@ class SimpleEncoder(Encoder):
     Args:
         Encoder (_type_): _description_
     """
-    
+
     def _set_model(self) -> nn.Module:
-        """
-        """
-        
-        model = nn.Sequential(
-            nn.Linear(self.n_input, self.n_hidden),
-            nn.LeakyReLU(0.1),
-            nn.Dropout(0.2)
-        )
-        
+        """ """
+
+        model = nn.Sequential(nn.Linear(self.n_input, self.n_hidden), nn.LeakyReLU(0.1), nn.Dropout(0.2))
+
         return model
 
 
@@ -92,10 +84,7 @@ class LinearEncoder(Encoder):
     """
 
     def _set_model(self) -> nn.Module:
-        
-        model = nn.Sequential(
-            nn.Linear(self.n_input, self.n_input)
-        )
+        model = nn.Sequential(nn.Linear(self.n_input, self.n_input))
         return model
 
 
@@ -107,9 +96,13 @@ class DynamicEncoder(Encoder):
     """
 
     def __init__(
-        self, n_input: int, n_hidden: int, num_layers: int,
-        dropout: float = 0.2, use_batchnorm: bool = True,
-        activation: str = 'lrelu'
+        self,
+        n_input: int,
+        n_hidden: int,
+        num_layers: int,
+        dropout: float = 0.2,
+        use_batchnorm: bool = True,
+        activation: str = 'lrelu',
     ):
         """Encoder constructor
 
@@ -132,7 +125,7 @@ class DynamicEncoder(Encoder):
             'lrelu': nn.LeakyReLU(),
             'sigmoid': nn.Sigmoid(),
             'tanhshrink': nn.Tanhshrink(),
-            'tanh': nn.Tanh()
+            'tanh': nn.Tanh(),
         }
 
         super().__init__(n_input=n_input, n_hidden=n_hidden)
@@ -149,11 +142,11 @@ class DynamicEncoder(Encoder):
                 module_list.append(nn.Linear(self.n_input, self.n_hidden))
             else:
                 module_list.append(nn.Linear(self.n_hidden, self.n_hidden))
-            
+
             # add batchnorm if requested
             if self.use_batchnorm:
                 module_list.append(nn.BatchNorm1d(self.n_hidden))
-            
+
             # add dropout if requested
             if self.dropout > 0:
                 module_list.append(nn.Dropout(p=self.dropout))

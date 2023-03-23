@@ -1,53 +1,50 @@
 import torch.nn as nn
+
 from multimodal_autoencoders.base.base_model import Decoder
 
 
 class CpdDecoder(Decoder):
-    
     def _set_model(self) -> nn.Module:
         """
         Define actual decoder model
         """
-        
+
         model = nn.Sequential(
-            nn.Linear(self.n_z, self.n_input),
-            nn.LeakyReLU(0.1),
-            nn.Dropout(0.3),
-            nn.Linear(self.n_input, self.n_input))
-        
+            nn.Linear(self.n_z, self.n_input), nn.LeakyReLU(0.1), nn.Dropout(0.3), nn.Linear(self.n_input, self.n_input)
+        )
+
         return model
 
 
 class PQSARDecoder(Decoder):
-
     def _set_model(self) -> nn.Module:
         """
         Define actual decoder model
         """
-        
+
         model = nn.Sequential(
             nn.Linear(self.n_z, self.n_hidden),
             nn.LeakyReLU(0.1),
             nn.Linear(self.n_hidden, self.n_hidden),
             nn.LeakyReLU(0.1),
-            nn.Linear(self.n_hidden, self.n_input))
-        
+            nn.Linear(self.n_hidden, self.n_input),
+        )
+
         return model
 
 
 class HTSDecoder(Decoder):
-
     def _set_model(self) -> nn.Module:
         """
         Define actual decoder model
         """
-        
+
         model = nn.Sequential(
             nn.Linear(self.n_z, self.n_hidden),
             nn.Tanhshrink(),
             nn.Linear(self.n_hidden, self.n_hidden),
             nn.Tanhshrink(),
-            nn.Linear(self.n_hidden, self.n_input)
+            nn.Linear(self.n_hidden, self.n_input),
         )
 
         return model
@@ -59,16 +56,13 @@ class SimpleDecoder(Decoder):
     Args:
         Decoder (_type_): _description_
     """
-    
+
     def _set_model(self) -> nn.Module:
         """
         Define actual decoder model
         """
-        
-        model = nn.Sequential(
-            nn.Dropout(0.2),
-            nn.Linear(self.n_z, self.n_input)
-        )
+
+        model = nn.Sequential(nn.Dropout(0.2), nn.Linear(self.n_z, self.n_input))
 
         return model
 
@@ -82,10 +76,7 @@ class LinearDecoder(Decoder):
     """
 
     def _set_model(self) -> nn.Module:
-        
-        model = nn.Sequential(
-            nn.Linear(self.n_input, self.n_input)
-        )
+        model = nn.Sequential(nn.Linear(self.n_input, self.n_input))
         return model
 
 
@@ -97,9 +88,14 @@ class DynamicDecoder(Decoder):
     """
 
     def __init__(
-        self, n_input: int, n_hidden: int, n_z: int, num_layers: int,
-        dropout: float = 0.2, use_batchnorm: bool = True,
-        activation: str = 'lrelu'
+        self,
+        n_input: int,
+        n_hidden: int,
+        n_z: int,
+        num_layers: int,
+        dropout: float = 0.2,
+        use_batchnorm: bool = True,
+        activation: str = 'lrelu',
     ):
         """Decoder constructor
 
@@ -124,13 +120,12 @@ class DynamicDecoder(Decoder):
             'lrelu': nn.LeakyReLU(),
             'sigmoid': nn.Sigmoid(),
             'tanhshrink': nn.Tanhshrink(),
-            'tanh': nn.Tanh()
+            'tanh': nn.Tanh(),
         }
 
         super().__init__(n_input=n_input, n_hidden=n_hidden, n_z=n_z)
 
     def _set_model(self) -> nn.Module:
-
         module_list = nn.ModuleList()
 
         for i in range(self.num_layers - 1):
@@ -140,11 +135,11 @@ class DynamicDecoder(Decoder):
                 module_list.append(nn.Linear(self.n_z, self.n_hidden))
             else:
                 module_list.append(nn.Linear(self.n_hidden, self.n_hidden))
-            
+
             # add batchnorm if requested
             if self.use_batchnorm:
                 module_list.append(nn.BatchNorm1d(self.n_hidden))
-            
+
             # add dropout if requested
             if self.dropout > 0:
                 module_list.append(nn.Dropout(p=self.dropout))
