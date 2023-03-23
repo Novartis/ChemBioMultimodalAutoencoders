@@ -1,16 +1,22 @@
-import torch
 import numpy as np
+import torch
 import torch.nn as nn
 from torch.autograd import Variable
-from multimodal_autoencoders.base.base_model import OptimizerBase, Encoder, Decoder
+
+from multimodal_autoencoders.base.base_model import Decoder, Encoder, OptimizerBase
 
 
 # base autencoder class
 class VariationalAutoencoder(nn.Module, OptimizerBase):
     def __init__(
-        self, encoder: Encoder, decoder: Decoder,
-        optimizer: str, learning_rate: float,
-        pretrain_epochs: int = 0, train_joint: bool = True, **kwargs
+        self,
+        encoder: Encoder,
+        decoder: Decoder,
+        optimizer: str,
+        learning_rate: float,
+        pretrain_epochs: int = 0,
+        train_joint: bool = True,
+        **kwargs,
     ):
         print('Initializing variational autoencoder model')
         # init torch.nn.Module first to make this a trainable module
@@ -19,41 +25,41 @@ class VariationalAutoencoder(nn.Module, OptimizerBase):
         # register all parts of the model
         self._Encoder = self._validate_encoder(encoder)
         self._Decoder = self._validate_decoder(decoder)
-        
+
         self.fc_mu = nn.Linear(encoder.n_hidden, decoder.n_z)
         self.fc_logvar = nn.Linear(encoder.n_hidden, decoder.n_z)
 
         # now we can init the associated optimizer, as the parameters are available
         OptimizerBase.__init__(self, self.parameters(), optimizer, learning_rate, **kwargs)
-        
+
         # other class attributes
         self.pretrain_epochs: int = pretrain_epochs
         self.train_joint: bool = train_joint
-    
+
     def get_encoder(self):
         return self._Encoder
-    
+
     def get_decoder(self):
         return self._Decoder
-    
+
     def encode(self, batch: torch.Tensor):
         hidden = self._Encoder(batch)
         mu = self.fc_mu(hidden)
         logvar = self.fc_logvar(hidden)
         z = self._reparametrize(mu, logvar)
         return z
-    
+
     def decode(self, z: torch.Tensor):
         return self._Decoder(z)
-        
+
     def forward(self, batch: torch.Tensor):
         self.encode(batch)
         hidden = self._Encoder(batch)
-        
+
         mu = self.fc_mu(hidden)
         logvar = self.fc_logvar(hidden)
         z = self._reparametrize(mu, logvar)
-        
+
         res = self.decode(z)
         return res, z, mu, logvar
 
@@ -68,7 +74,7 @@ class VariationalAutoencoder(nn.Module, OptimizerBase):
         z = eps.mul(std).add_(mu)
 
         return z
-    
+
     def __str__(self):
         """
         Model prints with number of trainable parameters
@@ -83,7 +89,7 @@ class VariationalAutoencoder(nn.Module, OptimizerBase):
         """
         assert isinstance(encoder, Encoder)
         return encoder
-   
+
     def _validate_decoder(self, decoder: Decoder):
         """
         Ensure the passed object is a subclass of Decoder

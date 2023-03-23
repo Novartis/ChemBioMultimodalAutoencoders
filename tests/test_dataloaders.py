@@ -1,11 +1,12 @@
 import numpy as np
-import torch
-from multimodal_autoencoders.data_loader.datasets import PairedDataset, UnpairedDataset
 import pytest
+import torch
+
+from multimodal_autoencoders.data_loader.datasets import PairedDataset
 
 data_dict = {
-    'ar1' : np.random.rand(10, 100),
-    'ar2' : np.random.rand(10, 100),
+    'ar1': np.random.rand(10, 100),
+    'ar2': np.random.rand(10, 100),
 }
 cluster_labels = np.random.rand(10)
 
@@ -22,12 +23,12 @@ def pds():
 
 def test_length_pdsc(pdsc):
     assert len(pdsc) == 10
-        
+
 
 def test_getitem_pdsc(pdsc):
     loader = torch.utils.data.DataLoader(pdsc, batch_size=1, num_workers=0, shuffle=False)
 
-    sample = iter(loader).next()
+    sample = next(iter(loader))
 
     # test that the dict has not more entries than anticipated
     assert len(sample) == 2

@@ -1,19 +1,20 @@
-from torch.utils.data import Dataset
-from typing import Dict
+from abc import abstractmethod
+from typing import Any, Dict
+
 import numpy as np
 from sklearn import preprocessing
-from abc import abstractmethod
+from torch.utils.data import Dataset
 
 
 class BaseDataset(Dataset):
     def __init__(self):
         super().__init__()
-        
+
         # set up label encoder
         self.label_encoder = preprocessing.LabelEncoder()
-        
+
         self.length: int = 0
-        
+
     @abstractmethod
     def _set_cluster_labels(self, cluster_labels=None):
         """
@@ -22,15 +23,15 @@ class BaseDataset(Dataset):
         needs to be implented by each subclass.
         """
         raise NotImplementedError
-        
+
     @abstractmethod
-    def _set_length(self, *input):
+    def _set_length(self, *input: Any) -> int:
         """
         Abstract method: logic for setting the length variable
         needs to be implented by each subclass.
         """
         raise NotImplementedError
-        
+
     @abstractmethod
     def _check_data_validity(self, data_dict: Dict[str, np.array]):
         """
@@ -46,13 +47,13 @@ class BaseDataset(Dataset):
         Needs to be implemnted by subclass.
         """
         raise NotImplementedError
-        
+
     def encode_cluster_labels(self, cluster_labels: np.array):
         self.label_encoder.fit(cluster_labels)
         return self.label_encoder.transform(cluster_labels)
-    
+
     def decode_cluster_labels(self, encoded_cluster_labels: np.array):
         return self.label_encoder.inverse_transform(encoded_cluster_labels)
-    
+
     def __len__(self):
         return self.length
