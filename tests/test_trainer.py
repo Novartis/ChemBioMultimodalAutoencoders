@@ -149,6 +149,19 @@ def test_translate_class(trainer_class):
 
 
 def test_save_model(trainer_class):
+    _ = trainer_class.train(
+        train_data_dict=data_dict,
+        val_data_dict=data_dict,
+        recon_weight=recon_weight_dict,
+        max_epochs=5,
+        batch_size=2,
+        cl_weight=1,
+        cluster_labels=cluster_labels,
+        cluster_modality='mod1',
+        patience=4,
+        min_value=100,
+    )
+
     # save model
     trainer_class.save_model('./test_save')
 
