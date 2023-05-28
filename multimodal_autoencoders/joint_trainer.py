@@ -102,19 +102,6 @@ class JointTrainer:
             assert os.path.exists(classifier_path), 'Classifier object provided, but path does not exist.'
             self.classifier.load_state_dict(torch.load(classifier_path, map_location=torch.device('cpu')))
 
-        # resume loss weights
-        loss_weight_path = os.path.join(checkpoint_dir, 'loss_weights.pth')
-        assert os.path.exists(loss_weight_path)
-        loss_weight_dict = torch.load(loss_weight_path)
-
-        # overwirte weights with content from stored dict
-        self.recon_weight_dict = loss_weight_dict['recon_weight']
-        self.beta = loss_weight_dict['beta']
-        self.cl_weight = loss_weight_dict['cl_weight']
-        self.disc_weight = loss_weight_dict['disc_weight']
-        self.anchor_weight = loss_weight_dict['anchor_weight']
-        self.paired = loss_weight_dict['paired']
-
     def _set_recon_weight_dict(self, recon_weight: Union[float, Dict[str, float]]) -> Dict[str, float]:
         """Helper function to create a model reconstruction weight dictionary if a single weight value
             was given. If already dict, just use as is.

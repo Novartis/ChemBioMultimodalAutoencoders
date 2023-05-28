@@ -1,5 +1,5 @@
 # ChemBioMultimodalAutoencoders
-a package for streamlined multidomain data integration and translation based on cross-modal autoencoders architectures
+a package for streamlined multidomain data integration and translation based on cross-modal autoencoders architectures.
 
 # README for Multimodal Autoencoders
 Basic version, no specific conda env yet. PythonDS should have most needed libraries.
