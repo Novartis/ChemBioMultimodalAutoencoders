@@ -1,8 +1,9 @@
 # ChemBioMultimodalAutoencoders
 a package for streamlined multidomain data integration and translation based on cross-modal autoencoders architectures.
 
-# README for Multimodal Autoencoders
-Basic version, no specific conda env yet. PythonDS should have most needed libraries.
+# Setting up the environment
+You can create an appropriate environment using the envirnment.yml file with conda:
+```conda env create -f environment.yml```
 
 # Basic Usage
 An example on how to train and use the multimodal autoencoders can be found in `examples/basic_usage.ipynb`<br>
