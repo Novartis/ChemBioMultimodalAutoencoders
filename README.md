@@ -2,7 +2,8 @@
 a package for streamlined multidomain data integration and translation based on cross-modal autoencoders architectures.
 
 # Setting up the environment
-You can create an appropriate environment using the envirnment.yml file with conda:
+You can create an appropriate environment using the environment.yml file with Conda:
+
 ```conda env create -f environment.yml```
 
 # Basic Usage
