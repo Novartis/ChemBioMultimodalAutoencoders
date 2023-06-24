@@ -117,6 +117,9 @@ class JointTrainer:
         if isinstance(recon_weight, float):
             for key in self.model_dict.keys():
                 recon_weight_dict[key] = recon_weight
+        elif isinstance(recon_weight, int):
+            for key in self.model_dict.keys():
+                recon_weight_dict[key] = float(recon_weight)
         elif isinstance(recon_weight, dict):
             recon_weight_dict = recon_weight
         else:
