@@ -3,7 +3,7 @@ name: build-and-publish
 on:
   push:
     tags:
-    - multimodal_autoencoders_v*
+    - v*
 
 concurrency:
   group: build-multimodal_autoencoders-${{ github.head_ref }}
