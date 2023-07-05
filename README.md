@@ -13,7 +13,7 @@
 
 </div>
 
-a package for streamlined multidomain data integration and translation based on [cross-modal autoencoder architecture](https://github.com/uhlerlab/cross-modal-autoencoders)[[1]](https://github.com/Novartis/ChemBioMultimodalAutoencoders/tree/readme-update#references). It is designed to add new data modalities and train models for seamless translation. 
+a package for streamlined multidomain data integration and translation based on [cross-modal autoencoder architecture](https://github.com/uhlerlab/cross-modal-autoencoders)[[1]](https://github.com/Novartis/ChemBioMultimodalAutoencoders#references). It is designed to add new data modalities and train models for seamless translation. 
 
 # Installation
 To install the package, simply run:
