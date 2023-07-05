@@ -1,34 +1,41 @@
 # ChemBioMultimodalAutoencoders
-a package for streamlined multidomain data integration and translation based on [cross-modal autoencoder architecture](https://github.com/uhlerlab/cross-modal-autoencoders). It is designed to add new data modalities and train models for seamless translation. 
+ 
 
-# Setting up the environment
-You can create an appropriate environment using the environment.yml file with Conda:
+<div>
+
+ |||
+| --- | --- |
+| CI/CD | [![tests](https://github.com/Novartis/ChemBioMultimodalAutoencoders/actions/workflows/python-package-test.yml/badge.svg?branch=main)](https://github.com/Novartis/ChemBioMultimodalAutoencoders/actions/workflows/python-package-test.yml) [![builds](https://github.com/Novartis/ChemBioMultimodalAutoencoders/actions/workflows/build-and-publish.yml/badge.svg)](https://github.com/Novartis/ChemBioMultimodalAutoencoders/actions/workflows/build-and-publish.yml) |
+| Package | [![PyPI - Version](https://img.shields.io/pypi/v/multimodal-autoencoders.svg?logo=pypi&label=PyPI&logoColor=gold)](https://pypi.org/project/multimodal-autoencoders/) ![Downloads](https://static.pepy.tech/badge/multimodal-autoencoders)[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/multimodal-autoencoders.svg?logo=python&label=Python&logoColor=gold)](https://pypi.org/project/multimodal-autoencoders/) |
+| Meta | [![Hatch project](https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg)](https://github.com/pypa/hatch) [![code style - black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![types - Mypy](https://img.shields.io/badge/types-Mypy-blue.svg)](https://github.com/python/mypy) [![imports - isort](https://img.shields.io/badge/imports-isort-ef8336.svg)](https://github.com/pycqa/isort) [![LICENSE](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/Novartis/ChemBioMultimodalAutoencoders/blob/readme-update/license.txt)
+
+ 
+
+</div>
+
+a package for streamlined multidomain data integration and translation based on [cross-modal autoencoder architecture](https://github.com/uhlerlab/cross-modal-autoencoders)[[1]](https://github.com/Novartis/ChemBioMultimodalAutoencoders/tree/readme-update#references). It is designed to add new data modalities and train models for seamless translation. 
+
+# Installation
+To install the package, simply run:
+
+```pip install multimodal-autoencoders```
+
+**(optional)**
+To make sure you have all the dependencies, you can create an appropriate environment using the environment.yml file with Conda:
 
 ```conda env create -f environment.yml```
 
-# Basic Usage
-An example on how to train and use the multimodal autoencoders can be found in `examples/basic_usage.ipynb`<br>
+# Usage
+An example on how to train and use the multimodal autoencoders can be found in relevant notebooks in `examples` <br>
 <br>
 Usage is centered around a JointTraner instance (defined in multimodal_autoencoders/trainer/joint_trainer.py). A central part of the whole architecture is that different components need to be associated to the individual modalities. This is done through python dictionaries, with which most users will be familiar with.<br>
 
-## Essential Components
-There are three essential components to the multimodal architecture:
-- A model dictionary containing string - autoencoder pairs.
-- A data dictionary containing string - numpy array pairs.
-- A discriminator instance.
-  
-**Important: all string keys of the dictionaries need to match across all dictionaries!**
+# Authors
+**Thibault Bechtler** (th.bechtler@gmail.com) & **Bartosz Baranowski** (bartosz.baranowski@novartis.com)
 
-### Model Dictionary
-The model dictionary should be a Python dictionary mapping a string name to an autoencoder. This can be an instance of the already defined VariationalAutoencoder class, or your own implementation. Please make sure that your own implementation is a subclass of the base autoencoder (definded in multimodal_autoencoders/base/autoencoder.py). Implementing the abstract functions ensures a seemles integration into the JointTrainer.
+Contributors:
+**Michal Pikusa** (michal.pikusa@novartis.com), **Steffen Renner** (steffen.renner@novartis.com)
 
-### Data Dictionary
-The data dictionary should be a Python dictionary mapping a string name to a numpy array. The names of the data dicionary entries need to match with the appropriate model in the model dictionary. <br>
-Disclaimer: At the moment only paired data sets are supported! All preprocessing and matching of the data is your responsiblity!
+# References
+```[1] Yang, K.D., Belyaeva, A., Venkatachalapathy, S. et al. Multi-domain translation between single-cell imaging and sequencing data using autoencoders. Nat Commun 12, 31 (2021). https://doi.org/10.1038/s41467-020-20249-2```
 
-## Optional Components
-### Classifier
-If available, the architecture can also condition the models take known clusters into account. For that you need to pass a classifier instance to the JointTrainer.
-
-### Cluster Labels
-The cluster labels need to be provided as a numpy array. The order of values inside the array needs to correspond to the order in the data provided in the data dictionary for now. This will change for future versions supporting unpaired data.

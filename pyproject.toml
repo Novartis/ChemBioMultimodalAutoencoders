@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "multimodal-autoencoders"
+name = "multimodal_autoencoders"
 description = "Pytorch reimplementation of https://www.nature.com/articles/s41467-020-20249-2 for streamlined multidomain data integration and translation based on cross-modal autoencoders architectures"
 dynamic = ["version"]
 readme = "README.md"
