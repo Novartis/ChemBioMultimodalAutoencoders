@@ -12,6 +12,6 @@ An example on how to train and use the multimodal autoencoders can be found in r
 Usage is centered around a JointTraner instance (defined in multimodal_autoencoders/trainer/joint_trainer.py). A central part of the whole architecture is that different components need to be associated to the individual modalities. This is done through python dictionaries, with which most users will be familiar with.<br>
 
 # Authors
-Thibault Bechtler & [Bartosz Baranowski](emailto:bartosz.baranowski@novartis.com)
+Thibault Bechtler & [Bartosz Baranowski](bartosz.baranowski@novartis.com)
 
 Contributors: Michal Pikusa, Steffen Renner
