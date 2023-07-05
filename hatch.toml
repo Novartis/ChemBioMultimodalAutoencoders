@@ -1,0 +1,75 @@
+[envs.default]
+dependencies = [
+  "coverage[toml]>=6.2",
+  "hatchling",
+  "filelock>=3.7.1",
+  "pytest",
+  "pytest-cov",
+  "pytest-mock",
+  "pytest-randomly",
+  "pytest-rerunfailures",
+  "pytest-xdist",
+  "trustme",
+  "dataclasses",
+  "numpy",
+  "torch",
+  "scikit-learn"
+]
+
+[envs.default.scripts]
+full = "pytest -n auto --reruns 5 --reruns-delay 3 -r aR --cov-report=term-missing --cov-config=pyproject.toml --cov=bayes/ --cov=tests {args:tests}"
+dev = "pytest -p no:randomly --no-cov {args:tests}"
+
+[envs.test.overrides]
+env.HERMETIC_TESTS.type = [
+  { value = "container", if = ["true"] },
+  "virtual",
+]
+
+[[envs.test.matrix]]
+python = ["38", "39", "310"]
+
+[envs.lint]
+detached = true
+dependencies = [
+  "bandit>=1.7.4",
+  "black>=22.6.0",
+  "flake8>=5.0.0",
+  "flake8-bugbear>=22.7.1",
+  "flake8-quotes>=3.3.1",
+  "flake8-tidy-imports>=4.8.0",
+  "isort>=5.10.1",
+  "mypy>=0.971",
+]
+
+[envs.lint.scripts]
+typing = "mypy --install-types --non-interactive {args:multimodal_autoencoders tests}"
+security = "bandit --quiet --recursive --skip B101,B102,B105,B110,B112,B301,B307,B324,B403,B404,B603,B604,B606,B607 {args:.}"
+style = [
+  "flake8 {args:.}",
+  "black --check --diff {args:.}",
+  "isort --check-only --diff {args:.}",
+]
+fmt = [
+  "isort {args:.}",
+  "black {args:.}",
+  "style",
+]
+all = [
+  "style",
+  "typing",
+  "security",
+]
+
+[envs.backend]
+detached = true
+dependencies = [
+  "build~=0.7.0",
+  "httpx",
+]
+
+[envs.backend.env-vars]
+HATCH_BUILD_CLEAN = "true"
+[envs.backend.scripts]
+build = "python -m build ."
+publish = "hatch publish dist"

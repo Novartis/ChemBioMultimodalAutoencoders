@@ -1,0 +1,82 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "multimodal_autoencoders"
+description = "Pytorch reimplementation of https://www.nature.com/articles/s41467-020-20249-2 for streamlined multidomain data integration and translation based on cross-modal autoencoders architectures"
+dynamic = ["version"]
+readme = "README.md"
+license = "MIT"
+keywords = []
+authors = [
+    { name = "Thibault, Bechtler", email = "th.bechtler@gmail.com" },
+    { name = "Bartosz, Baranowski", email = "bartosz.baranowski@novartis.com" },
+]
+contributors = [
+    { name = "Steffen, Renner", email = "steffen.renner@novartis.com" },
+    { name = "Michal, Pikusa", email = "michal.pikusa@novartis.com" },
+]
+dependencies = [
+    "dataclasses",
+    "numpy",
+    "scikit-learn",
+    "torch",
+]
+
+[tool.hatch.version]
+path = "multimodal_autoencoders/__about__.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/multimodal_autoencoders",
+]
+exclude = [
+  "/.github",
+  "/.git",
+]
+
+[project.urls]
+Documentation = "https://github.com/unknown/multimodal_autoencoders#readme"
+Issues = "https://github.com/unknown/multimodal_autoencoders/issues"
+Source = "https://github.com/unknown/multimodal_autoencoders"
+
+[tool.mypy]
+disallow_untyped_defs = false
+follow_imports = "normal"
+ignore_missing_imports = true
+pretty = true
+show_column_numbers = true
+warn_no_return = false
+warn_unused_ignores = true
+
+[tool.bandit]
+recursive = true
+skip = ["B101", "B102", "B105", "B110", "B112", "B301", "B307", "B324", "B403", "B404", "B603", "B604", "B606", "B607"]
+
+[tool.black]
+include = '\.pyi?$'
+line-length = 120
+skip-string-normalization = true
+target-version = ["py38"]
+
+[tool.isort]
+default_section = "THIRDPARTY"
+force_grid_wrap = 0
+include_trailing_comma = true
+known_first_party = ["hatch", "hatchling"]
+line_length = 120
+multi_line_output = 3
+use_parentheses = true
+
+[tool.coverage.run]
+branch = true
+omit = [
+]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
