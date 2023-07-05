@@ -2,8 +2,6 @@ name: build-and-publish
 
 on:
   push:
-    tags:
-    - v*
 
 concurrency:
   group: build-multimodal_autoencoders-${{ github.head_ref }}
