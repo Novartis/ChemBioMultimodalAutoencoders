@@ -37,5 +37,5 @@ Contributors:
 **Michal Pikusa** (michal.pikusa@novartis.com), **Steffen Renner** (steffen.renner@novartis.com)
 
 # References
-[1] Yang, K.D., Belyaeva, A., Venkatachalapathy, S. et al. Multi-domain translation between single-cell imaging and sequencing data using autoencoders. Nat Commun 12, 31 (2021). https://doi.org/10.1038/s41467-020-20249-2
+```[1] Yang, K.D., Belyaeva, A., Venkatachalapathy, S. et al. Multi-domain translation between single-cell imaging and sequencing data using autoencoders. Nat Commun 12, 31 (2021). https://doi.org/10.1038/s41467-020-20249-2```
 
