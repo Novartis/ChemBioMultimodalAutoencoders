@@ -2,7 +2,7 @@
  
 
 <div>
-| | |
+|||
 | --- | --- |
 | CI/CD | [![tests](https://github.com/Novartis/ChemBioMultimodalAutoencoders/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/Novartis/ChemBioMultimodalAutoencoders/actions/workflows/tests.yml) [![Build - lmnb](https://github.com/Novartis/ChemBioMultimodalAutoencoders/actions/workflows/build-lmnb.yml/badge.svg)](https://github.com/Novartis/ChemBioMultimodalAutoencoders/actions/workflows/build-lmnb.yml) |
 | Package | [![PyPI - Version](https://img.shields.io/pypi/v/multimodal-autoencoders.svg?logo=pypi&label=PyPI&logoColor=gold)](https://pypi.org/project/multimodal-autoencoders/) [![PyPI - Downloads](https://img.shields.io/pypi/dm/multimodal-autoencoders.svg?color=blue&label=Downloads&logo=pypi&logoColor=gold)](https://pypi.org/project/multimodal-autoencoders/) [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/multimodal-autoencoders.svg?logo=python&label=Python&logoColor=gold)](https://pypi.org/project/multimodal-autoencoders/) |
