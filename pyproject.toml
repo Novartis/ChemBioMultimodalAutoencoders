@@ -17,6 +17,12 @@ contributors = [
     { name = "Steffen, Renner", email = "steffen.renner@novartis.com" },
     { name = "Michal, Pikusa", email = "michal.pikusa@novartis.com" },
 ]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+]
 dependencies = [
     "dataclasses",
     "numpy",
@@ -37,9 +43,9 @@ exclude = [
 ]
 
 [project.urls]
-Documentation = "https://github.com/unknown/multimodal_autoencoders#readme"
-Issues = "https://github.com/unknown/multimodal_autoencoders/issues"
-Source = "https://github.com/unknown/multimodal_autoencoders"
+Documentation = "https://github.com/Novartis/ChemBioMultimodalAutoencoders#readme"
+Issues = "https://github.com/Novartis/ChemBioMultimodalAutoencoders/issues"
+Source = "https://github.com/Novartis/ChemBioMultimodalAutoencoders"
 
 [tool.mypy]
 disallow_untyped_defs = false
