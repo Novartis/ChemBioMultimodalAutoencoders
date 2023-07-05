@@ -15,9 +15,12 @@
 
 a package for streamlined multidomain data integration and translation based on [cross-modal autoencoder architecture](https://github.com/uhlerlab/cross-modal-autoencoders)[1]. It is designed to add new data modalities and train models for seamless translation. 
 
-# Setting up the environment
-You can create an appropriate environment using the environment.yml file with Conda:
+# Installation
+To install the package, simply run:
+```pip install multimodal-autoencoders```
 
+**(optional)**
+To make sure you have all the dependencies, you can create an appropriate environment using the environment.yml file with Conda:
 ```conda env create -f environment.yml```
 
 # Usage
