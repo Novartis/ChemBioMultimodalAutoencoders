@@ -17,10 +17,12 @@ a package for streamlined multidomain data integration and translation based on 
 
 # Installation
 To install the package, simply run:
+
 ```pip install multimodal-autoencoders```
 
 **(optional)**
 To make sure you have all the dependencies, you can create an appropriate environment using the environment.yml file with Conda:
+
 ```conda env create -f environment.yml```
 
 # Usage
